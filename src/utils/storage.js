@@ -90,6 +90,15 @@ export function saveGeminiKey(key) {
   safeSet(KEYS.GEMINI_KEY, key)
 }
 
+export function removeGeminiKey() {
+  try {
+    localStorage.removeItem(KEYS.GEMINI_KEY)
+    return true
+  } catch {
+    return false
+  }
+}
+
 export function clearAllData() {
   Object.values(KEYS).forEach((k) => localStorage.removeItem(k))
 }

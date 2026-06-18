@@ -77,3 +77,34 @@ export function getFallbackAdvice({ inputs, impactLabel }) {
   lines.push('Small, consistent swaps beat big one-off efforts — keep going, you are already paying attention.')
   return lines.join('\n')
 }
+
+export async function validateGeminiKey(apiKey) {
+  if (!apiKey) throw new Error('NO_API_KEY')
+  const testPrompt = 'Please respond with the single word: VALID'
+  const payload = {
+    contents: [{ parts: [{ text: testPrompt }] }],
+    generationConfig: { temperature: 0, maxOutputTokens: 10 },
+  }
+
+  let response
+  try {
+    response = await fetch(`${GEMINI_ENDPOINT}?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+  } catch (err) {
+    console.error('Gemini validation network error', err)
+    throw err
+  }
+
+  if (!response.ok) {
+    const body = await response.json().catch(() => null)
+    console.error('Gemini validation failed', { status: response.status, body })
+    throw new Error(body?.error?.message || `Validation failed with status ${response.status}`)
+  }
+
+  const data = await response.json()
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || ''
+  return text.trim().toUpperCase().startsWith('VALID')
+}

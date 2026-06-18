@@ -142,26 +142,6 @@ These figures are simplified, illustrative averages meant to build awareness and
 
 ---
 
-## Deploying to Vercel
-
-### Option A — Vercel CLI
-
-```bash
-npm install -g vercel
-vercel
-```
-
-### Option B — Git + Vercel dashboard
-
-1. Push this project to a GitHub/GitLab/Bitbucket repo.
-2. Go to [vercel.com/new](https://vercel.com/new) and import the repo.
-3. Vercel auto-detects Vite. Framework preset: **Vite**. Build command: `npm run build`. Output directory: `dist`.
-4. Deploy — no environment variables are required.
-
-The included `vercel.json` adds an SPA rewrite rule so client-side routes (`/dashboard`, `/challenges`, `/about`) work correctly on refresh/direct navigation.
-
----
-
 ## Data & Privacy
 
 - All carbon logs, challenge completions, points, and badges are stored in `localStorage` on your device.

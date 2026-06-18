@@ -5,8 +5,10 @@ import ResultPanel from '../components/calculator/ResultPanel'
 import StatCard from '../components/common/StatCard'
 import WeeklyTrendChart from '../components/dashboard/WeeklyTrendChart'
 import CategoryBreakdownChart from '../components/dashboard/CategoryBreakdownChart'
+import EnvironmentPanel from '../components/dashboard/EnvironmentPanel'
 import AICoachPanel from '../components/coach/AICoachPanel'
 import { useCarbonData } from '../hooks/useCarbonData'
+import { useEnvData } from '../hooks/useEnvData'
 import { IconTarget, IconTrendUp, IconTrendDown, IconAward } from '../components/common/Icons'
 
 export default function Dashboard() {
@@ -26,6 +28,9 @@ export default function Dashboard() {
 
   const yesterday = history.length >= 2 ? history[history.length - 2] : null
   const delta = today && yesterday ? +(today.score - yesterday.score).toFixed(1) : null
+
+  const { weather, airQuality, recommendations, loading, error, hasPermission, aqiAdvice } =
+    useEnvData({ carbonScore: today?.score ?? 0, impactLabel: today ? impact?.label ?? '' : '' })
 
   return (
     <PageLayout>
@@ -99,6 +104,17 @@ export default function Dashboard() {
         <div className="grid gap-6 lg:grid-cols-2">
           <WeeklyTrendChart history={history} />
           <CategoryBreakdownChart breakdown={today?.breakdown} />
+        </div>
+
+        <div className="mt-6">
+          <EnvironmentPanel
+            weather={weather}
+            airQuality={airQuality}
+            recommendations={recommendations}
+            loading={loading}
+            error={!hasPermission ? 'Location permission is required to show live environmental data.' : error}
+            aqiAdvice={aqiAdvice}
+          />
         </div>
       </div>
 

@@ -1,17 +1,20 @@
 import { useState, useEffect, useRef } from 'react'
 import GlassCard from '../common/GlassCard'
 import { IconRobot, IconSparkles, IconClose } from '../common/Icons'
-import { getAICoachAdvice, getFallbackAdvice } from '../../utils/geminiService'
-import { getGeminiKey, saveGeminiKey } from '../../utils/storage'
+import { getAICoachAdvice, getFallbackAdvice, validateGeminiKey } from '../../utils/geminiService'
+import { getGeminiKey, saveGeminiKey, removeGeminiKey } from '../../utils/storage'
 import { getImpactLevel } from '../../data/carbonData'
 
 export default function AICoachPanel({ open, onClose, entry }) {
-  const [apiKey, setApiKey] = useState(getGeminiKey())
-  const [showKeyInput, setShowKeyInput] = useState(!getGeminiKey())
+  const savedGeminiKey = getGeminiKey()
+  const [apiKey, setApiKey] = useState(savedGeminiKey || '')
+  const [showKeyInput, setShowKeyInput] = useState(!savedGeminiKey)
+  const [connected, setConnected] = useState(Boolean(savedGeminiKey))
   const [loading, setLoading] = useState(false)
   const [advice, setAdvice] = useState('')
   const [error, setError] = useState('')
   const [usedFallback, setUsedFallback] = useState(false)
+  const [statusMessage, setStatusMessage] = useState('')
   const dialogRef = useRef(null)
 
   useEffect(() => {
@@ -27,9 +30,35 @@ export default function AICoachPanel({ open, onClose, entry }) {
 
   const impactLabel = getImpactLevel(entry.score).label
 
-  const handleSaveKey = () => {
-    saveGeminiKey(apiKey.trim())
-    setShowKeyInput(false)
+  const handleSaveKey = async () => {
+    setStatusMessage('')
+    setError('')
+    const trimmed = apiKey.trim()
+    if (!trimmed) {
+      setError('Please enter a valid API key.')
+      return
+    }
+    setLoading(true)
+    try {
+      const ok = await validateGeminiKey(trimmed)
+      if (!ok) throw new Error('Key validation failed')
+      saveGeminiKey(trimmed)
+      setShowKeyInput(false)
+      setConnected(true)
+      setStatusMessage('Gemini AI Connected')
+    } catch (err) {
+      setError(err.message || 'Failed to validate API key')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleRemoveKey = () => {
+    removeGeminiKey()
+    setApiKey('')
+    setShowKeyInput(true)
+    setConnected(false)
+    setStatusMessage('')
   }
 
   const handleGetAdvice = async () => {
@@ -37,8 +66,9 @@ export default function AICoachPanel({ open, onClose, entry }) {
     setError('')
     setUsedFallback(false)
     try {
+      const keyToUse = getGeminiKey() || (connected ? apiKey : '')
       const text = await getAICoachAdvice({
-        apiKey: getGeminiKey(),
+        apiKey: keyToUse,
         inputs: entry.inputs,
         score: entry.score,
         breakdown: entry.breakdown,
@@ -101,25 +131,56 @@ export default function AICoachPanel({ open, onClose, entry }) {
                 className="flex-1 rounded-lg border border-white/10 bg-carbon-900 px-3 py-2 text-sm text-bark-200 placeholder:text-bark-400/60 focus:border-moss-500/50"
               />
               <button onClick={handleSaveKey} className="btn-secondary whitespace-nowrap">
-                Save key
+                {loading ? 'Validating...' : 'Save key'}
               </button>
             </div>
-            <button
-              onClick={() => setShowKeyInput(false)}
-              className="mt-2 text-xs font-medium text-bark-400 underline-offset-2 hover:text-bark-300 hover:underline"
-            >
-              Skip — use offline coaching
-            </button>
+            <div className="mt-2 flex items-center justify-between">
+              <a
+                href="https://aistudio.google.com/app/apikey"
+                target="_blank"
+                rel="noreferrer"
+                className="text-xs font-medium text-bark-400 underline-offset-2 hover:text-bark-300 hover:underline"
+              >
+                Get Free API Key
+              </a>
+              <button
+                onClick={() => setShowKeyInput(false)}
+                className="text-xs font-medium text-bark-400 underline-offset-2 hover:text-bark-300 hover:underline"
+              >
+                Skip — use offline coaching
+              </button>
+            </div>
+            {error && <p className="mt-3 text-xs text-signal-bad">{error}</p>}
+            {statusMessage && <p className="mt-3 text-xs text-moss-400">{statusMessage}</p>}
           </div>
         )}
 
         {!showKeyInput && (
-          <button
-            onClick={() => setShowKeyInput(true)}
-            className="mt-4 text-xs font-medium text-bark-400 underline-offset-2 hover:text-bark-300 hover:underline"
-          >
-            {getGeminiKey() ? 'Update API key' : 'Add a Gemini API key for live advice'}
-          </button>
+          <>
+            {connected ? (
+              <div className="mt-4 flex items-center justify-between">
+                <span className="text-xs text-moss-400">Gemini AI Connected</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setShowKeyInput(true)}
+                    className="text-xs font-medium text-bark-400 underline-offset-2 hover:text-bark-300 hover:underline"
+                  >
+                    Update API key
+                  </button>
+                  <button onClick={handleRemoveKey} className="text-xs font-medium text-signal-bad">
+                    Remove API Key
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={() => setShowKeyInput(true)}
+                className="mt-4 text-xs font-medium text-bark-400 underline-offset-2 hover:text-bark-300 hover:underline"
+              >
+                Add a Gemini API key for live advice
+              </button>
+            )}
+          </>
         )}
 
         <div className="mt-5">
