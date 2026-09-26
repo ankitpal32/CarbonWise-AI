@@ -63,7 +63,7 @@ export default function GoalTracker({ currentScore = 0, goal, onSaveGoal }) {
         <div className="mt-4 space-y-3">
           <div className="flex items-baseline justify-between text-xs">
             <span className="text-bark-300">
-              Target: <b className="text-lichen-400">-{goal.targetPercent}% reduction</b> (≤ {goal.targetKg?.toFixed(1)} kg CO₂e/day)
+              Target: <b className="text-lichen-400">-{goal.targetPercent}% reduction</b> (≤ {typeof goal.targetKg === 'number' && Number.isFinite(goal.targetKg) ? goal.targetKg.toFixed(1) : '—'} kg CO₂e/day)
             </span>
             <span className="font-mono text-moss-300 font-semibold">
               {progressPercent}% on track
@@ -78,9 +78,9 @@ export default function GoalTracker({ currentScore = 0, goal, onSaveGoal }) {
           </div>
 
           <div className="flex items-center justify-between text-[11px] text-bark-400">
-            <span>Baseline: {goal.baseScore?.toFixed(1)} kg</span>
-            <span>Today: {currentScore > 0 ? `${currentScore.toFixed(1)} kg` : 'Not logged'}</span>
-            <span>Target: {goal.targetKg?.toFixed(1)} kg</span>
+            <span>Baseline: {typeof goal.baseScore === 'number' && Number.isFinite(goal.baseScore) ? `${goal.baseScore.toFixed(1)} kg` : '—'}</span>
+            <span>Today: {typeof currentScore === 'number' && currentScore > 0 ? `${currentScore.toFixed(1)} kg` : 'Not logged'}</span>
+            <span>Target: {typeof goal.targetKg === 'number' && Number.isFinite(goal.targetKg) ? `${goal.targetKg.toFixed(1)} kg` : '—'}</span>
           </div>
         </div>
       ) : (

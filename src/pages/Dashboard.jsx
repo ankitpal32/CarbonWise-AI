@@ -1,13 +1,8 @@
 import { useState } from 'react'
-<<<<<<< HEAD
-import { Link } from 'react-router-dom'
-=======
->>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
 import PageLayout from '../components/layout/PageLayout'
 import CalculatorForm from '../components/calculator/CalculatorForm'
 import ResultPanel from '../components/calculator/ResultPanel'
 import StatCard from '../components/common/StatCard'
-<<<<<<< HEAD
 import GlassCard from '../components/common/GlassCard'
 import WeeklyTrendChart from '../components/dashboard/WeeklyTrendChart'
 import CategoryBreakdownChart from '../components/dashboard/CategoryBreakdownChart'
@@ -18,7 +13,7 @@ import AICoachPanel from '../components/coach/AICoachPanel'
 import { useCarbonData } from '../hooks/useCarbonData'
 import { useEnvData } from '../hooks/useEnvData'
 import { getReductionPlan } from '../data/carbonData'
-import { IconTarget, IconTrendUp, IconTrendDown, IconAward, IconSparkles, IconRobot, IconArrowRight, IconCheck } from '../components/common/Icons'
+import { IconTarget, IconTrendUp, IconTrendDown, IconAward, IconSparkles, IconRobot, IconCheck } from '../components/common/Icons'
 
 export default function Dashboard() {
   const {
@@ -36,18 +31,6 @@ export default function Dashboard() {
     setPersonalGoal,
   } = useCarbonData()
 
-=======
-import WeeklyTrendChart from '../components/dashboard/WeeklyTrendChart'
-import CategoryBreakdownChart from '../components/dashboard/CategoryBreakdownChart'
-import EnvironmentPanel from '../components/dashboard/EnvironmentPanel'
-import AICoachPanel from '../components/coach/AICoachPanel'
-import { useCarbonData } from '../hooks/useCarbonData'
-import { useEnvData } from '../hooks/useEnvData'
-import { IconTarget, IconTrendUp, IconTrendDown, IconAward } from '../components/common/Icons'
-
-export default function Dashboard() {
-  const { history, today, impact, points, badge, lastInput, submitToday } = useCarbonData()
->>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
   const [coachOpen, setCoachOpen] = useState(false)
   const [editing, setEditing] = useState(false)
 
@@ -58,18 +41,16 @@ export default function Dashboard() {
 
   const weeklyAvg =
     history.length > 0
-<<<<<<< HEAD
-      ? +(history.slice(-7).reduce((sum, h) => sum + (h.score || 0), 0) / Math.min(history.length, 7)).toFixed(1)
-=======
-      ? +(history.slice(-7).reduce((sum, h) => sum + h.score, 0) / Math.min(history.length, 7)).toFixed(1)
->>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
+      ? +(history.slice(-7).reduce((sum, h) => sum + (typeof h?.score === 'number' && Number.isFinite(h.score) ? h.score : 0), 0) / Math.min(history.length, 7)).toFixed(1)
       : 0
 
   const yesterday = history.length >= 2 ? history[history.length - 2] : null
-  const delta = today && yesterday ? +(today.score - yesterday.score).toFixed(1) : null
+  const delta =
+    today && yesterday && typeof today.score === 'number' && typeof yesterday.score === 'number'
+      ? +(today.score - yesterday.score).toFixed(1)
+      : null
 
-<<<<<<< HEAD
-  const { weather, airQuality, locationInfo, recommendations, loading, error, locationStatus, aqiAdvice } =
+  const { weather, airQuality, locationInfo, recommendations, loading, error, locationStatus, aqiAdvice, requestLocation } =
     useEnvData({ carbonScore: today?.score ?? 0, impactLabel: today ? impact?.label ?? '' : '' })
 
   const reductionPlan = today?.breakdown ? getReductionPlan(today.breakdown) : null
@@ -97,36 +78,22 @@ export default function Dashboard() {
                   <span className="block font-medium text-bark-200 truncate max-w-[150px] sm:max-w-[200px]">
                     {locationInfo?.formattedName || 'Kolkata, West Bengal'}
                   </span>
-                  {locationInfo?.isDefault && (
+                  {(!locationInfo || locationInfo.isDefault) && (
                     <span className="chip text-[9px] py-0 px-1.5 text-bark-400 border-white/10 bg-white/[0.03]">
                       Default location
                     </span>
                   )}
                 </div>
                 <span className="block text-[10px] text-bark-400">
-                  {weather ? `${weather.temperature?.toFixed(0)}°C, ${weather.condition}` : 'Telemetry active'} · AQI {airQuality?.aqiLevel?.label || 'Moderate'}
+                  {weather && typeof weather.temperature === 'number' && Number.isFinite(weather.temperature)
+                    ? `${weather.temperature.toFixed(0)}°C, ${weather.condition || 'Fair'}`
+                    : 'Telemetry active'} · AQI {airQuality?.aqiLevel?.label || 'Moderate'}
                 </span>
               </div>
             </div>
           </div>
           <p className="mt-3 max-w-2xl text-sm text-bark-400">
             Log today's habits to calculate your estimated footprint in kg CO₂e, track reductions against your goals, and receive localized guidance.
-=======
-  const { weather, airQuality, recommendations, loading, error, hasPermission, aqiAdvice } =
-    useEnvData({ carbonScore: today?.score ?? 0, impactLabel: today ? impact?.label ?? '' : '' })
-
-  return (
-    <PageLayout>
-      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
-        <header className="mb-8">
-          <p className="section-eyebrow">Dashboard</p>
-          <h1 className="mt-1 font-display text-3xl font-semibold text-bark-200 sm:text-4xl">
-            Today's Footprint, at a Glance
-          </h1>
-          <p className="mt-2 max-w-2xl text-sm text-bark-400">
-            Log today's habits below to update your score, see your weekly trend, and get
-            recommendations tailored to your choices.
->>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
           </p>
         </header>
 
@@ -134,11 +101,10 @@ export default function Dashboard() {
         <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard
             label="Today's Score"
-            value={today ? today.score.toFixed(1) : '—'}
+            value={today && typeof today.score === 'number' && Number.isFinite(today.score) ? today.score.toFixed(1) : '—'}
             unit="kg CO₂e"
             icon={<IconTarget className="w-4 h-4" />}
             accent="moss"
-<<<<<<< HEAD
             trend={currentStreak > 0 ? `🔥 ${currentStreak} day streak` : 'Log today to start streak'}
           />
           <StatCard
@@ -151,37 +117,21 @@ export default function Dashboard() {
           />
           <StatCard
             label="vs. Previous Log"
-=======
-          />
-          <StatCard
-            label="7-Day Average"
-            value={weeklyAvg || '—'}
-            unit={weeklyAvg ? 'kg CO₂e' : ''}
-            icon={<IconTrendUp className="w-4 h-4" />}
-            accent="lichen"
-          />
-          <StatCard
-            label="vs. Yesterday"
->>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
-            value={delta !== null ? `${delta > 0 ? '+' : ''}${delta}` : '—'}
+            value={delta !== null && Number.isFinite(delta) ? `${delta > 0 ? '+' : ''}${delta}` : '—'}
             unit={delta !== null ? 'kg CO₂e' : ''}
             icon={delta !== null && delta > 0 ? <IconTrendUp className="w-4 h-4" /> : <IconTrendDown className="w-4 h-4" />}
             accent={delta !== null && delta > 0 ? 'warn' : 'moss'}
-<<<<<<< HEAD
             trend={delta !== null ? (delta <= 0 ? 'Estimated decrease' : 'Higher than previous') : 'Need 2+ days'}
-=======
->>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
           />
           <StatCard
             label="Impact Level"
-            value={impact ? impact.label.replace(' Impact', '') : '—'}
+            value={impact && impact.label ? impact.label.replace(' Impact', '') : '—'}
             icon={<IconAward className="w-4 h-4" />}
             accent={impact?.id === 'low' ? 'moss' : impact?.id === 'moderate' ? 'lichen' : impact?.id === 'high' ? 'warn' : 'bad'}
-            trend={`${badge.name} · ${points} pts`}
+            trend={`${badge?.name || 'Green Beginner'} · ${points || 0} pts`}
           />
         </div>
 
-<<<<<<< HEAD
         {/* Before / After Trend Banner (When 2+ days logged) */}
         {history.length >= 2 && yesterday && today && (
           <div className="mb-8 rounded-xl border border-white/[0.08] bg-white/[0.02] p-4 text-xs text-bark-300">
@@ -208,13 +158,10 @@ export default function Dashboard() {
           />
         </div>
 
-=======
->>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
         {/* Calculator or results */}
         <div className="mb-8">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="font-display text-xl font-semibold text-bark-200">
-<<<<<<< HEAD
               {today && !editing ? "Today's footprint summary" : "Log today's habits"}
             </h2>
             {today && !editing && (
@@ -224,16 +171,6 @@ export default function Dashboard() {
                 className="text-sm font-medium text-bark-300 underline-offset-2 hover:text-moss-400 hover:underline"
               >
                 Edit today's log
-=======
-              {today && !editing ? "Today's log" : "Log today's habits"}
-            </h2>
-            {today && !editing && (
-              <button
-                onClick={() => setEditing(true)}
-                className="text-sm font-medium text-bark-400 underline-offset-2 hover:text-moss-400 hover:underline"
-              >
-                Edit today's entry
->>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
               </button>
             )}
           </div>
@@ -244,7 +181,6 @@ export default function Dashboard() {
           )}
         </div>
 
-<<<<<<< HEAD
         {/* Today's Sustainability Insight (Concise AI UX) */}
         {today && reductionPlan && (
           <div className="mb-8">
@@ -310,8 +246,6 @@ export default function Dashboard() {
           </div>
         )}
 
-=======
->>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
         {/* Charts */}
         <div className="grid gap-6 lg:grid-cols-2">
           <WeeklyTrendChart history={history} />
@@ -322,21 +256,18 @@ export default function Dashboard() {
           <EnvironmentPanel
             weather={weather}
             airQuality={airQuality}
+            locationInfo={locationInfo}
             recommendations={recommendations}
             loading={loading}
-<<<<<<< HEAD
             error={error}
             aqiAdvice={aqiAdvice}
             locationStatus={locationStatus}
-=======
-            error={!hasPermission ? 'Location permission is required to show live environmental data.' : error}
-            aqiAdvice={aqiAdvice}
->>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
+            onRequestLocation={requestLocation}
+            isRequestingLocation={locationStatus === 'requesting'}
           />
         </div>
       </div>
 
-<<<<<<< HEAD
       <AICoachPanel
         open={coachOpen}
         onClose={() => setCoachOpen(false)}
@@ -348,9 +279,6 @@ export default function Dashboard() {
         streak={currentStreak}
         history={history}
       />
-=======
-      <AICoachPanel open={coachOpen} onClose={() => setCoachOpen(false)} entry={today} />
->>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
     </PageLayout>
   )
 }

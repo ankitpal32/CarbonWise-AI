@@ -8,7 +8,7 @@
 const REVERSE_GEOCODE_URL = 'https://api.bigdatacloud.net/data/reverse-geocode-client'
 
 export async function reverseGeocode({ lat, lon }) {
-  if (!lat || !lon) return { city: 'Local Area', region: '', country: '' }
+  if (!lat || !lon) return { success: false, city: '', region: '', country: '', formattedName: '' }
 
   try {
     const url = `${REVERSE_GEOCODE_URL}?latitude=${lat}&longitude=${lon}&localityLanguage=en`
@@ -20,17 +20,18 @@ export async function reverseGeocode({ lat, lon }) {
 
     if (res.ok) {
       const data = await res.json()
-      const city = data.city || data.locality || data.principalSubdivision || 'Local Area'
+      const city = data.city || data.locality || data.principalSubdivision || ''
       const region = data.principalSubdivision || ''
       const country = data.countryName || ''
 
       const formattedName = [city, region, country].filter(Boolean).slice(0, 2).join(', ')
 
       return {
+        success: Boolean(city || region),
         city,
         region,
         country,
-        formattedName: formattedName || 'Local Area',
+        formattedName: formattedName || `${lat.toFixed(2)}°, ${lon.toFixed(2)}°`,
         lat,
         lon,
       }
@@ -40,10 +41,11 @@ export async function reverseGeocode({ lat, lon }) {
   }
 
   return {
-    city: 'Local Area',
+    success: false,
+    city: '',
     region: '',
     country: '',
-    formattedName: 'Local Area',
+    formattedName: `${lat.toFixed(2)}°, ${lon.toFixed(2)}°`,
     lat,
     lon,
   }

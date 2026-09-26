@@ -7,7 +7,6 @@ html {
 }
 
 body {
-<<<<<<< HEAD
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background-color: #08140f;
   background-image:
@@ -20,24 +19,10 @@ body {
 ::selection {
   background: rgba(34, 168, 102, 0.3);
   color: #ffffff;
-=======
-  font-family: 'Inter', system-ui, sans-serif;
-  background-color: #0a1712;
-  background-image:
-    radial-gradient(circle at 15% 0%, rgba(63, 196, 126, 0.10), transparent 45%),
-    radial-gradient(circle at 85% 20%, rgba(174, 212, 59, 0.06), transparent 40%);
-  min-height: 100vh;
-}
-
-::selection {
-  background: rgba(63, 196, 126, 0.35);
-  color: #eefbf3;
->>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-<<<<<<< HEAD
   width: 8px;
   height: 8px;
 }
@@ -47,40 +32,20 @@ body {
 ::-webkit-scrollbar-thumb {
   background: #183327;
   border-radius: 6px;
-=======
-  width: 10px;
-  height: 10px;
-}
-::-webkit-scrollbar-track {
-  background: #0a1712;
-}
-::-webkit-scrollbar-thumb {
-  background: #1a3a2c;
-  border-radius: 8px;
->>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #244f3c;
 }
 
-<<<<<<< HEAD
 /* Accessible focus outline */
 :focus-visible {
   outline: 2px solid #22a866;
   outline-offset: 2px;
   border-radius: 6px;
-=======
-/* Focus visibility, kept for accessibility, styled to match theme */
-:focus-visible {
-  outline: 2px solid #3fc47e;
-  outline-offset: 2px;
-  border-radius: 4px;
->>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
 }
 
 @layer components {
   .glass-card {
-<<<<<<< HEAD
     @apply relative rounded-2xl border border-white/[0.07] bg-white/[0.025] backdrop-blur-md shadow-sm;
   }
 
@@ -102,48 +67,12 @@ body {
 
   .field-label {
     @apply text-xs font-semibold uppercase tracking-wider text-bark-300;
-=======
-    @apply relative rounded-xl2 border border-white/[0.06] bg-white/[0.035] backdrop-blur-xl shadow-glass;
-  }
-
-  .glass-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0) 40%);
-    pointer-events: none;
-  }
-
-  .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full bg-moss-500 px-5 py-2.5 text-sm font-semibold text-carbon-950 transition-all duration-200 hover:bg-moss-400 hover:shadow-glow-moss active:scale-[0.97] disabled:opacity-50 disabled:pointer-events-none;
-  }
-
-  .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-5 py-2.5 text-sm font-semibold text-bark-200 backdrop-blur-md transition-all duration-200 hover:border-moss-500/40 hover:bg-white/[0.07] active:scale-[0.97];
-  }
-
-  .chip {
-    @apply rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-medium text-bark-300;
-  }
-
-  .section-eyebrow {
-    @apply font-mono text-xs uppercase tracking-[0.18em] text-moss-400;
-  }
-
-  .field-label {
-    @apply text-xs font-semibold uppercase tracking-wide text-bark-300;
->>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
   }
 }
 
 @layer utilities {
   .text-gradient-moss {
-<<<<<<< HEAD
     background: linear-gradient(125deg, #eefbf3, #a3e8c2 45%, #c9e567);
-=======
-    background: linear-gradient(120deg, #d3f4e1, #6dd89e 45%, #aed43b);
->>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;

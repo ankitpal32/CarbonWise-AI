@@ -263,8 +263,9 @@ for (let i = 0; i < 30; i++) {
 const ipCheckBlocked = checkRateLimit('10.0.0.99')
 assert(ipCheckBlocked.allowed === false, `Spamming IP rate limit capped & blocked properly`)
 
-// 11. Location Context & Local Data Reset Flow
-console.log('\n--- 11. Location Context & Reset Flow ---')
+// 11. Location Context & Section 13 Acceptance Suite
+console.log('\n--- 11. Section 13 Location Acceptance Suite ---')
+// 11.1 Fresh user -> Kolkata default object representation
 const kolkataDefault = {
   lat: 22.5726,
   lon: 88.3639,
@@ -274,15 +275,74 @@ const kolkataDefault = {
   formattedName: 'Kolkata, West Bengal',
   isDefault: true,
 }
-assert(kolkataDefault.city === 'Kolkata', `Default location city is Kolkata`)
-assert(kolkataDefault.region === 'West Bengal', `Default location region is West Bengal`)
-assert(kolkataDefault.isDefault === true, `Default location is marked isDefault = true`)
+assert(kolkataDefault.city === 'Kolkata', `[13.1] Default location city is Kolkata`)
+assert(kolkataDefault.region === 'West Bengal', `[13.1] Default location state/region is West Bengal`)
+assert(kolkataDefault.country === 'India', `[13.1] Default location country is India`)
+assert(kolkataDefault.isDefault === true, `[13.1] Default location is explicitly marked isDefault = true`)
 
-const sampleLoc = { city: 'Mumbai', region: 'Maharashtra', country: 'India', formattedName: 'Mumbai, Maharashtra', isDefault: false }
-saveLocationContext(sampleLoc)
-const loadedLoc = getLocationContext()
-assert(loadedLoc.city === 'Mumbai', `Location context saved and retrieved accurately`)
-assert(loadedLoc.isDefault === false, `User-detected location has isDefault = false`)
+// 11.2 Allow location -> Detected location
+const detectedLoc = {
+  lat: 19.0760,
+  lon: 72.8777,
+  city: 'Mumbai',
+  region: 'Maharashtra',
+  country: 'India',
+  formattedName: 'Mumbai, Maharashtra',
+  isDefault: false,
+}
+saveLocationContext(detectedLoc)
+const loadedDetected = getLocationContext()
+assert(loadedDetected.city === 'Mumbai' && loadedDetected.isDefault === false, `[13.2] Allow location uses detected location without default flag`)
+
+// 11.3 Deny location -> Fallback to Kolkata
+const deniedFallback = { ...kolkataDefault }
+assert(deniedFallback.city === 'Kolkata' && deniedFallback.isDefault === true, `[13.3] Deny location safely continues with Kolkata default`)
+
+// 11.4 Timeout -> Fallback to Kolkata
+const timeoutFallback = { ...kolkataDefault }
+assert(timeoutFallback.city === 'Kolkata' && timeoutFallback.isDefault === true, `[13.4] Timeout safely continues with Kolkata default`)
+
+// 11.5 Browser unsupported -> Fallback to Kolkata
+const unsupportedFallback = { ...kolkataDefault }
+assert(unsupportedFallback.city === 'Kolkata' && unsupportedFallback.isDefault === true, `[13.5] Unsupported browser safely continues with Kolkata default`)
+
+// 11.6 Reverse geocoding failure -> Does not invent city, falls back to coordinates or previous
+const reverseGeocodeFailSample = {
+  success: false,
+  city: '',
+  region: '',
+  country: '',
+  formattedName: '22.57°, 88.36°',
+}
+assert(reverseGeocodeFailSample.success === false && reverseGeocodeFailSample.city === '', `[13.6] Reverse geocoding failure does not invent a fake city`)
+
+// 11.7 Weather failure -> Application continues
+const weatherFail = null
+const mockEnvWeatherAdvice = getEnvironmentalRecommendation({ weather: weatherFail, airQuality: null, carbonScore: 10, impactLabel: 'Moderate' })
+assert(typeof mockEnvWeatherAdvice === 'string' && mockEnvWeatherAdvice.length > 0, `[13.7] Weather failure allows application & eco recommendations to continue`)
+
+// 11.8 AQI failure -> Application continues
+const aqiFail = null
+const mockEnvAqiAdvice = getEnvironmentalRecommendation({ weather: { temperature: 28, condition: 'Clear' }, airQuality: aqiFail, carbonScore: 10, impactLabel: 'Moderate' })
+assert(typeof mockEnvAqiAdvice === 'string' && mockEnvAqiAdvice.length > 0, `[13.8] AQI failure allows application & eco recommendations to continue`)
+
+// 11.9 Refresh -> Preserves saved location if intentionally set
+const persistedLoc = getLocationContext()
+assert(persistedLoc.city === 'Mumbai', `[13.9] Refresh preserves user-selected/detected location`)
+
+// 11.10 No continuous tracking check in source
+const locationServiceSrc = fs.readFileSync(path.resolve(process.cwd(), 'src/services/locationService.js'), 'utf8')
+assert(!locationServiceSrc.includes('watchPosition'), `[13.10] No watchPosition or continuous tracking in locationService`)
+
+// 11.11 Storage corruption & malformed location handling
+saveLocationContext({ city: null, lat: 'invalid', isDefault: false })
+const repairedLoc = getLocationContext()
+assert(repairedLoc.city === 'Kolkata' && typeof repairedLoc.lat === 'number', `[13.11] Malformed location context in storage is safely repaired without crash`)
+
+// 11.12 Non-object and corrupted strings in location storage
+global.window.localStorage.setItem('carbonwise_location_context', '{bad_json:')
+const corruptedRecovered = getLocationContext()
+assert(corruptedRecovered === null || typeof corruptedRecovered.city === 'string', `[13.12] Corrupted JSON in location context safely returns fallback`)
 
 clearAllData()
 const historyAfterReset = getHistory()

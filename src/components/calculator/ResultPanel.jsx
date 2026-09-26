@@ -1,15 +1,8 @@
-<<<<<<< HEAD
 import { useState } from 'react'
 import GlassCard from '../common/GlassCard'
 import LeafGauge from '../dashboard/LeafGauge'
 import { getRecommendations, getCalculationDetails, FACTOR_VERSION } from '../../data/carbonData'
 import { IconCar, IconBolt, IconPlate, IconBottle, IconSparkles, IconClose } from '../common/Icons'
-=======
-import GlassCard from '../common/GlassCard'
-import LeafGauge from '../dashboard/LeafGauge'
-import { getRecommendations } from '../../data/carbonData'
-import { IconCar, IconBolt, IconPlate, IconBottle, IconSparkles } from '../common/Icons'
->>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
 
 const BREAKDOWN_META = [
   { key: 'transport', label: 'Transportation', icon: <IconCar className="w-4 h-4" /> },
@@ -19,7 +12,6 @@ const BREAKDOWN_META = [
 ]
 
 export default function ResultPanel({ entry, onOpenCoach }) {
-<<<<<<< HEAD
   const [showFormulaModal, setShowFormulaModal] = useState(false)
 
   if (!entry || !entry.breakdown) return null
@@ -43,24 +35,10 @@ export default function ResultPanel({ entry, onOpenCoach }) {
         >
           <span>ℹ️</span> How is this calculated?
         </button>
-=======
-  if (!entry) return null
-  const recommendations = getRecommendations(entry.inputs)
-  const maxVal = Math.max(...BREAKDOWN_META.map((m) => entry.breakdown[m.key]), 1)
-
-  return (
-    <div className="grid gap-6 lg:grid-cols-[280px_1fr] animate-rise">
-      <GlassCard className="flex flex-col items-center justify-center p-6">
-        <LeafGauge score={entry.score} />
-        <p className="mt-4 text-center text-sm text-bark-400">
-          Today's footprint based on your inputs
-        </p>
->>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
       </GlassCard>
 
       <div className="grid gap-6">
         <GlassCard className="p-6">
-<<<<<<< HEAD
           <div className="flex items-center justify-between">
             <div>
               <p className="section-eyebrow">Breakdown</p>
@@ -75,14 +53,6 @@ export default function ResultPanel({ entry, onOpenCoach }) {
             {BREAKDOWN_META.map((m) => {
               const val = entry.breakdown[m.key] || 0
               const pct = Math.min(100, (val / maxVal) * 100)
-=======
-          <p className="section-eyebrow">Breakdown</p>
-          <h3 className="mt-1 font-display text-lg font-semibold text-bark-200">Where it's coming from</h3>
-          <div className="mt-5 space-y-4">
-            {BREAKDOWN_META.map((m) => {
-              const val = entry.breakdown[m.key]
-              const pct = (val / maxVal) * 100
->>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
               return (
                 <div key={m.key}>
                   <div className="mb-1.5 flex items-center justify-between text-sm">
@@ -90,11 +60,7 @@ export default function ResultPanel({ entry, onOpenCoach }) {
                       <span className="text-moss-400">{m.icon}</span>
                       {m.label}
                     </span>
-<<<<<<< HEAD
                     <span className="font-mono text-xs text-bark-400">{val.toFixed(1)} kg CO₂e</span>
-=======
-                    <span className="font-mono text-xs text-bark-400">{val.toFixed(1)} kg</span>
->>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
                   </div>
                   <div className="h-2 w-full overflow-hidden rounded-full bg-white/[0.05]">
                     <div
@@ -116,22 +82,17 @@ export default function ResultPanel({ entry, onOpenCoach }) {
                 Personalized for today's choices
               </h3>
             </div>
-<<<<<<< HEAD
             <button
               type="button"
               onClick={onOpenCoach}
               className="btn-secondary hidden sm:inline-flex"
             >
-=======
-            <button onClick={onOpenCoach} className="btn-secondary hidden sm:inline-flex">
->>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
               <IconSparkles className="w-4 h-4 text-lichen-400" />
               Ask AI Coach
             </button>
           </div>
           <ul className="mt-5 space-y-3">
             {recommendations.map((rec) => (
-<<<<<<< HEAD
               <li key={rec.id} className="flex items-start gap-3 rounded-xl border border-white/[0.06] bg-white/[0.02] p-3.5">
                 <span className="chip shrink-0">{rec.category}</span>
                 <span className="text-sm leading-relaxed text-bark-300">{rec.text}</span>
@@ -143,21 +104,11 @@ export default function ResultPanel({ entry, onOpenCoach }) {
             onClick={onOpenCoach}
             className="btn-primary mt-5 w-full sm:hidden"
           >
-=======
-              <li key={rec.id} className="flex items-start gap-3 rounded-lg border border-white/[0.06] bg-white/[0.02] p-3">
-                <span className="chip shrink-0">{rec.category}</span>
-                <span className="text-sm text-bark-300">{rec.text}</span>
-              </li>
-            ))}
-          </ul>
-          <button onClick={onOpenCoach} className="btn-primary mt-5 w-full sm:hidden">
->>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
             <IconSparkles className="w-4 h-4" />
             Ask AI Coach
           </button>
         </GlassCard>
       </div>
-<<<<<<< HEAD
 
       {/* Calculation Transparency Modal */}
       {showFormulaModal && (
@@ -239,8 +190,6 @@ export default function ResultPanel({ entry, onOpenCoach }) {
           </GlassCard>
         </div>
       )}
-=======
->>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
     </div>
   )
 }
