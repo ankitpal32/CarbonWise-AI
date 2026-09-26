@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import coachHandler from './api/coach.js'
@@ -67,12 +68,20 @@ function devApiServerPlugin() {
 
 export default defineConfig({
   plugins: [react(), devApiServerPlugin()],
+=======
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+>>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
   server: {
     port: 5173,
   },
   build: {
     outDir: 'dist',
     sourcemap: false,
+<<<<<<< HEAD
     rollupOptions: {
       output: {
         manualChunks: {
@@ -81,5 +90,7 @@ export default defineConfig({
         },
       },
     },
+=======
+>>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
   },
 })

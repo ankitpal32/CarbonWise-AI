@@ -1,12 +1,20 @@
+<<<<<<< HEAD
 import PageLayout from '../components/layout/PageLayout'
 import LocationHero from '../components/home/LocationHero'
 import GlassCard from '../components/common/GlassCard'
 import { IconTarget, IconAward, IconSparkles } from '../components/common/Icons'
+=======
+import { Link } from 'react-router-dom'
+import PageLayout from '../components/layout/PageLayout'
+import GlassCard from '../components/common/GlassCard'
+import { IconLeaf, IconTarget, IconAward, IconSparkles, IconChevronRight } from '../components/common/Icons'
+>>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
 
 const FEATURES = [
   {
     icon: IconTarget,
     title: 'Calculate your footprint',
+<<<<<<< HEAD
     desc: 'Answer four quick daily habit questions to get an instant carbon score in kg CO₂e with impact categorization.',
   },
   {
@@ -18,14 +26,61 @@ const FEATURES = [
     icon: IconAward,
     title: 'Challenges & active streaks',
     desc: 'Complete real-life eco challenges, build daily tracking streaks, and unlock achievement badges.',
+=======
+    desc: 'Answer four quick questions about your day and get an instant carbon score with a clear impact rating.',
+  },
+  {
+    icon: IconSparkles,
+    title: 'Personalized recommendations',
+    desc: 'Get specific, actionable suggestions tied to your actual choices — not generic eco-tips.',
+  },
+  {
+    icon: IconAward,
+    title: 'Challenges and badges',
+    desc: 'Complete eco challenges, earn points, and unlock badges from Green Beginner to Sustainability Champion.',
+>>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
   },
 ]
 
 export default function Home() {
   return (
     <PageLayout>
+<<<<<<< HEAD
       {/* Location-First Onboarding Hero */}
       <LocationHero />
+=======
+      {/* Hero */}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-canopy-glow" />
+        <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
+          <div className="mx-auto max-w-2xl text-center">
+            <span className="section-eyebrow inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5">
+              <IconLeaf className="w-3.5 h-3.5" />
+              Daily carbon awareness, made simple
+            </span>
+            <h1 className="mt-6 font-display text-4xl font-semibold leading-tight text-bark-200 sm:text-5xl">
+              Know your footprint.{' '}
+              <span className="text-gradient-moss">Shrink it, one day at a time.</span>
+            </h1>
+            <p className="mt-5 text-base text-bark-300 sm:text-lg">
+              CarbonWise AI turns your daily habits into a simple carbon score and clear steps to lower it.
+            </p>
+            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Link to="/dashboard" className="btn-primary px-6 py-3 text-base">
+                Calculate My Footprint
+                <IconChevronRight className="w-4 h-4" />
+              </Link>
+              <Link to="/challenges" className="btn-secondary px-6 py-3 text-base">
+                Explore Challenges
+              </Link>
+            </div>
+            <p className="mt-5 text-xs text-bark-400">
+              No sign-up. No tracking. Everything stays on your device.
+            </p>
+          </div>
+        </div>
+      </section>
+>>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
 
       {/* Features */}
       <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
@@ -48,9 +103,15 @@ export default function Home() {
       {/* Why it matters strip */}
       <section className="border-t border-white/[0.06] bg-carbon-900/40">
         <div className="mx-auto grid max-w-6xl gap-8 px-4 py-14 sm:grid-cols-3 sm:px-6">
+<<<<<<< HEAD
           <Stat value="4" label="Daily inputs to calculate your footprint" />
           <Stat value="6" label="Eco challenges to form sustainable habits" />
           <Stat value="0" label="Accounts, passwords, or tracking databases" />
+=======
+          <Stat value="4" label="Daily inputs to track your footprint" />
+          <Stat value="6" label="Eco challenges to build better habits" />
+          <Stat value="3" label="Achievement tiers to unlock" />
+>>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
         </div>
       </section>
     </PageLayout>

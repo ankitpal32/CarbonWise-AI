@@ -134,6 +134,7 @@ export function IconChevronRight({ className = 'w-5 h-5' }) {
   )
 }
 
+<<<<<<< HEAD
 export function IconArrowRight({ className = 'w-5 h-5' }) {
   return (
     <svg viewBox="0 0 24 24" className={className} {...base}>
@@ -151,6 +152,8 @@ export function IconShieldCheck({ className = 'w-5 h-5' }) {
   )
 }
 
+=======
+>>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
 export function IconMenu({ className = 'w-5 h-5' }) {
   return (
     <svg viewBox="0 0 24 24" className={className} {...base}>

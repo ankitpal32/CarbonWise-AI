@@ -1,6 +1,9 @@
 import { useState, useEffect, useCallback } from 'react'
 import {
+<<<<<<< HEAD
   initializeStorage,
+=======
+>>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
   getHistory,
   saveTodayEntry,
   getCompletedChallenges,
@@ -8,6 +11,7 @@ import {
   getPoints,
   getLastInput,
   saveLastInput,
+<<<<<<< HEAD
   calculateStreaks,
   getGoal,
   saveGoal,
@@ -16,10 +20,13 @@ import {
   exportDataAsCSV,
   importDataFromJSON,
   clearAllData,
+=======
+>>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
 } from '../utils/storage'
 import { calculateCarbonScore, getImpactLevel, getCurrentBadge, getNextBadge } from '../data/carbonData'
 
 export function useCarbonData() {
+<<<<<<< HEAD
   const [history, setHistory] = useState(() => {
     initializeStorage()
     return getHistory()
@@ -31,10 +38,19 @@ export function useCarbonData() {
   const [locationContext, setLocationContext] = useState(() => getLocationContext())
 
   const refreshState = useCallback(() => {
+=======
+  const [history, setHistory] = useState(getHistory())
+  const [completed, setCompleted] = useState(getCompletedChallenges())
+  const [points, setPoints] = useState(getPoints())
+  const [lastInput, setLastInput] = useState(getLastInput())
+
+  useEffect(() => {
+>>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
     setHistory(getHistory())
     setCompleted(getCompletedChallenges())
     setPoints(getPoints())
     setLastInput(getLastInput())
+<<<<<<< HEAD
     setGoal(getGoal())
     setLocationContext(getLocationContext())
   }, [])
@@ -46,6 +62,10 @@ export function useCarbonData() {
     return () => window.removeEventListener('storage', handleStorageChange)
   }, [refreshState])
 
+=======
+  }, [])
+
+>>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
   const submitToday = useCallback((inputs) => {
     const { total, breakdown } = calculateCarbonScore(inputs)
     const entry = {
@@ -62,6 +82,7 @@ export function useCarbonData() {
   }, [])
 
   const toggleChallenge = useCallback((id, pointsValue) => {
+<<<<<<< HEAD
     const isCompleted = Boolean(completed[id])
     const { completedMap, totalPoints } = setChallengeCompletion(id, !isCompleted, pointsValue)
     setCompleted(completedMap)
@@ -95,6 +116,18 @@ export function useCarbonData() {
   const badge = getCurrentBadge(points)
   const nextBadge = getNextBadge(points)
   const { currentStreak, maxStreak } = calculateStreaks(history)
+=======
+    const isCompleted = !!completed[id]
+    const { completedMap, totalPoints } = setChallengeCompletion(id, !isCompleted, pointsValue)
+    setCompleted({ ...completedMap })
+    setPoints(totalPoints)
+  }, [completed])
+
+  const today = history.find((h) => h.date === new Date().toISOString().slice(0, 10)) || null
+  const impact = today ? getImpactLevel(today.score) : null
+  const badge = getCurrentBadge(points)
+  const nextBadge = getNextBadge(points)
+>>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
 
   return {
     history,
@@ -105,6 +138,7 @@ export function useCarbonData() {
     badge,
     nextBadge,
     lastInput,
+<<<<<<< HEAD
     goal,
     locationContext,
     currentStreak,
@@ -117,5 +151,9 @@ export function useCarbonData() {
     exportJSON,
     exportCSV,
     importJSON,
+=======
+    submitToday,
+    toggleChallenge,
+>>>>>>> 44e51c889406c7d32cea2fe385fee8568117e882
   }
 }
