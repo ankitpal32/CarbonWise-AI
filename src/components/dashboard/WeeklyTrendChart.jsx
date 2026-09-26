@@ -1,0 +1,96 @@
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts'
+import GlassCard from '../common/GlassCard'
+
+function formatDay(dateStr) {
+  try {
+    const d = new Date(dateStr)
+    return d.toLocaleDateString('en-US', { weekday: 'short', month: 'numeric', day: 'numeric' })
+  } catch {
+    return dateStr
+  }
+}
+
+function CustomTooltip({ active, payload, label }) {
+  if (!active || !payload?.length) return null
+  return (
+    <div className="rounded-lg border border-white/10 bg-carbon-900/95 px-3 py-2 text-xs shadow-glass">
+      <p className="font-medium text-bark-300">{label}</p>
+      <p className="mt-0.5 font-mono text-moss-400">{(payload[0].value || 0).toFixed(1)} kg CO₂e</p>
+    </div>
+  )
+}
+
+export default function WeeklyTrendChart({ history = [] }) {
+  const safeHistory = Array.isArray(history) ? history : []
+  const last7 = safeHistory
+    .slice(-7)
+    .filter((h) => h && typeof h.score === 'number')
+    .map((h) => ({
+      date: formatDay(h.date),
+      score: h.score,
+    }))
+
+  const hasData = last7.length > 0
+
+  return (
+    <GlassCard className="p-6">
+      <p className="section-eyebrow">Weekly Trend</p>
+      <h3 className="mt-1 font-display text-lg font-semibold text-bark-200">Emissions history</h3>
+
+      <div className="mt-4 h-64 w-full">
+        {hasData ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={last7} margin={{ top: 10, right: 10, bottom: 0, left: -20 }}>
+              <defs>
+                <linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#3fc47e" stopOpacity={0.4} />
+                  <stop offset="100%" stopColor="#3fc47e" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid stroke="rgba(255,255,255,0.06)" vertical={false} />
+              <XAxis
+                dataKey="date"
+                stroke="rgba(255,255,255,0.3)"
+                tick={{ fill: '#a89d8c', fontSize: 11 }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <YAxis
+                stroke="rgba(255,255,255,0.3)"
+                tick={{ fill: '#a89d8c', fontSize: 11 }}
+                axisLine={false}
+                tickLine={false}
+                width={36}
+              />
+              <Tooltip content={<CustomTooltip />} />
+              <Area
+                type="monotone"
+                dataKey="score"
+                stroke="#3fc47e"
+                strokeWidth={2.5}
+                fill="url(#trendFill)"
+                dot={{ fill: '#3fc47e', r: 3.5, strokeWidth: 0 }}
+                activeDot={{ r: 5 }}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        ) : (
+          <div className="flex h-full flex-col items-center justify-center text-center p-6 rounded-xl border border-white/[0.04] bg-white/[0.01]">
+            <p className="text-sm font-medium text-bark-300">No carbon history yet.</p>
+            <p className="mt-1 max-w-xs text-xs text-bark-400">
+              Complete your first carbon check above to see your 7-day trend.
+            </p>
+          </div>
+        )}
+      </div>
+    </GlassCard>
+  )
+}

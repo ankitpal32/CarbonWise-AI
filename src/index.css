@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: #08140f;
+  background-image:
+    radial-gradient(circle at 20% 0%, rgba(34, 168, 102, 0.08), transparent 40%),
+    radial-gradient(circle at 80% 20%, rgba(174, 212, 59, 0.05), transparent 35%);
+  min-height: 100vh;
+  color: #e2ded7;
+}
+
+::selection {
+  background: rgba(34, 168, 102, 0.3);
+  color: #ffffff;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #08140f;
+}
+::-webkit-scrollbar-thumb {
+  background: #183327;
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #244f3c;
+}
+
+/* Accessible focus outline */
+:focus-visible {
+  outline: 2px solid #22a866;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+@layer components {
+  .glass-card {
+    @apply relative rounded-2xl border border-white/[0.07] bg-white/[0.025] backdrop-blur-md shadow-sm;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-moss-500 px-5 py-2.5 text-sm font-semibold text-carbon-950 transition-all duration-150 hover:bg-moss-400 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-5 py-2.5 text-sm font-medium text-bark-200 transition-all duration-150 hover:border-moss-500/30 hover:bg-white/[0.06] active:scale-[0.98];
+  }
+
+  .chip {
+    @apply inline-flex items-center rounded-lg border border-white/10 bg-white/[0.03] px-2.5 py-1 text-xs font-medium text-bark-300;
+  }
+
+  .section-eyebrow {
+    @apply font-mono text-xs uppercase tracking-[0.14em] text-moss-400 font-semibold;
+  }
+
+  .field-label {
+    @apply text-xs font-semibold uppercase tracking-wider text-bark-300;
+  }
+}
+
+@layer utilities {
+  .text-gradient-moss {
+    background: linear-gradient(125deg, #eefbf3, #a3e8c2 45%, #c9e567);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
